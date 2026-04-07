@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Key, Eye, EyeOff, Zap, RotateCcw, Clipboard } from "lucide-react";
+import { Key, Eye, EyeOff, Zap, RotateCcw, Clipboard, FlaskConical } from "lucide-react";
 import type { ProviderId } from "@/lib/types";
 import { PROVIDER_LIST } from "@/lib/providers";
 import { detectProvider, getDetectionConfidence } from "@/lib/detect-provider";
@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface KeyTesterProps {
   prefillKey?: string;
@@ -26,6 +27,7 @@ export function KeyTester({ prefillKey, prefillProvider }: KeyTesterProps = {}) 
     (prefillProvider as ProviderId) ?? "auto"
   );
   const [detectedProvider, setDetectedProvider] = useState<ProviderId>("unknown");
+  const [deepTest, setDeepTest] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { loading, result, error, testKey, reset } = useKeyTest();
@@ -58,7 +60,7 @@ export function KeyTester({ prefillKey, prefillProvider }: KeyTesterProps = {}) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!key.trim()) return;
-    testKey(key.trim(), effectiveProvider);
+    testKey(key.trim(), effectiveProvider, deepTest);
   };
 
   const handlePasteFromClipboard = async () => {
@@ -173,6 +175,40 @@ export function KeyTester({ prefillKey, prefillProvider }: KeyTesterProps = {}) 
                 <RotateCcw className="w-4 h-4" />
               </Button>
             )}
+          </div>
+        </div>
+
+        {/* Deep test toggle */}
+        <div className="flex items-start gap-2.5 pt-0.5">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={deepTest}
+            onClick={() => setDeepTest((d) => !d)}
+            className={cn(
+              "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500",
+              deepTest ? "bg-indigo-600" : "bg-white/15"
+            )}
+          >
+            <span
+              className={cn(
+                "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-lg ring-0 transition-transform",
+                deepTest ? "translate-x-4" : "translate-x-0"
+              )}
+            />
+          </button>
+          <div className="space-y-0.5">
+            <label
+              className="flex items-center gap-1.5 text-xs font-medium cursor-pointer select-none"
+              onClick={() => setDeepTest((d) => !d)}
+            >
+              <FlaskConical className="w-3.5 h-3.5 text-amber-400" />
+              Full generation test
+            </label>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Makes a real API call (~1 token). Confirms generation works, not just auth.{" "}
+              <span className="text-amber-400/80">Uses a tiny amount of your credits.</span>
+            </p>
           </div>
         </div>
 

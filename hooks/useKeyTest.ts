@@ -18,14 +18,14 @@ export function useKeyTest() {
     error: null,
   });
 
-  const testKey = useCallback(async (key: string, provider?: ProviderId) => {
+  const testKey = useCallback(async (key: string, provider?: ProviderId, deepTest = false) => {
     setState({ loading: true, result: null, error: null });
 
     try {
       const res = await fetch("/api/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key: key.trim(), provider }),
+        body: JSON.stringify({ key: key.trim(), provider, deepTest }),
       });
 
       const data = await res.json();

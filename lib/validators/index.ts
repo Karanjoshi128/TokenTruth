@@ -9,6 +9,7 @@ import { validateGroq } from "./groq";
 import { validateTogether } from "./together";
 import { validateReplicate } from "./replicate";
 import { validatePerplexity } from "./perplexity";
+import { runDeepTest } from "./deep-test";
 
 type ValidatorFn = (key: string) => Promise<Omit<ValidationResult, "testedAt" | "latencyMs">>;
 
@@ -27,7 +28,8 @@ const validators: Partial<Record<ProviderId, ValidatorFn>> = {
 
 export async function runValidator(
   key: string,
-  provider: ProviderId
+  provider: ProviderId,
+  deepTest = false
 ): Promise<ValidationResult> {
   const start = Date.now();
   const fn = validators[provider];
@@ -47,9 +49,16 @@ export async function runValidator(
   const result = await fn(key);
   const latencyMs = Date.now() - start;
 
+  // Only run the generation probe if the key authenticated successfully.
+  const deepTestResult =
+    deepTest && result.valid
+      ? (await runDeepTest(key, provider)) ?? undefined
+      : undefined;
+
   return {
     ...result,
     testedAt: new Date().toISOString(),
     latencyMs,
+    ...(deepTestResult !== undefined ? { deepTestResult } : {}),
   };
 }

@@ -20,6 +20,14 @@ export interface ProviderMeta {
   statusUrl: string;
 }
 
+export interface DeepTestResult {
+  success: boolean;
+  model: string;
+  latencyMs: number;
+  tokensUsed?: number;
+  error?: string;
+}
+
 export interface ValidationResult {
   valid: boolean;
   provider: ProviderId;
@@ -39,6 +47,7 @@ export interface ValidationResult {
   quotaTotal?: number;
   expiresAt?: string;
   extra?: Record<string, unknown>;
+  deepTestResult?: DeepTestResult;
 }
 
 export interface HistoryEntry extends ValidationResult {

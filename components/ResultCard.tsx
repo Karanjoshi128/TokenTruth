@@ -16,6 +16,7 @@ import {
   Mail,
   Zap,
   Tag,
+  FlaskConical,
 } from "lucide-react";
 import type { ValidationResult } from "@/lib/types";
 import { PROVIDERS } from "@/lib/providers";
@@ -138,6 +139,41 @@ export function ResultCard({ result }: ResultCardProps) {
                 .map(([k, v]) => (
                   <MetaItem key={k} icon={<Tag className="w-3.5 h-3.5" />} label={k} value={String(v)} />
                 ))}
+            </div>
+          )}
+
+          {/* Deep test result */}
+          {result.deepTestResult && (
+            <div
+              className={`rounded-lg border px-3.5 py-2.5 flex items-start gap-3 ${
+                result.deepTestResult.success
+                  ? "bg-emerald-500/8 border-emerald-500/25"
+                  : "bg-amber-500/8 border-amber-500/25"
+              }`}
+            >
+              <FlaskConical
+                className={`w-4 h-4 mt-0.5 shrink-0 ${
+                  result.deepTestResult.success ? "text-emerald-400" : "text-amber-400"
+                }`}
+              />
+              <div className="min-w-0">
+                <p className={`text-xs font-medium ${result.deepTestResult.success ? "text-emerald-400" : "text-amber-400"}`}>
+                  {result.deepTestResult.success ? "Generation confirmed" : "Generation failed"}
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  {result.deepTestResult.success ? (
+                    <>
+                      Model: <span className="font-mono">{result.deepTestResult.model}</span>
+                      {" · "}+{result.deepTestResult.latencyMs}ms
+                      {result.deepTestResult.tokensUsed !== undefined && (
+                        <> · {result.deepTestResult.tokensUsed} token{result.deepTestResult.tokensUsed !== 1 ? "s" : ""} used</>
+                      )}
+                    </>
+                  ) : (
+                    result.deepTestResult.error ?? "Unknown error"
+                  )}
+                </p>
+              </div>
             </div>
           )}
 

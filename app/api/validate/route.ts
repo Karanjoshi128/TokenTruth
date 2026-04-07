@@ -51,11 +51,13 @@ export async function POST(req: NextRequest) {
   // ── Parse & validate body ──────────────────────────────────────────────────
   let key: string;
   let rawProvider: unknown;
+  let deepTest = false;
 
   try {
     const body = await req.json();
     key = body.key;
     rawProvider = body.provider;
+    if (body.deepTest === true) deepTest = true;
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
@@ -92,7 +94,7 @@ export async function POST(req: NextRequest) {
 
   // ── Validation ─────────────────────────────────────────────────────────────
   try {
-    const result = await runValidator(trimmedKey, resolvedProvider);
+    const result = await runValidator(trimmedKey, resolvedProvider, deepTest);
 
     return NextResponse.json(result, {
       headers: {
