@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma:*)",
+      "Bash(node -e \"const crypto = require\\('crypto'\\); console.log\\('SESSION_SECRET=' + crypto.randomBytes\\(32\\).toString\\('base64'\\)\\); console.log\\('ENCRYPTION_KEY=' + crypto.randomBytes\\(32\\).toString\\('hex'\\)\\);\")",
+      "Bash(npx tsc:*)",
+      "Bash(node -e \"const p = require\\('./lib/generated/prisma/client.ts'\\); console.log\\(Object.keys\\(p\\)\\)\")",
+      "Bash(npm run:*)",
+      "Bash(turso:*)",
+      "Bash(winget:*)",
+      "Bash(scoop:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(xargs grep:*)",
+      "Bash(node:*)",
+      "Bash(ls node_modules/prisma/query-engine* node_modules/prisma/schema-engine* node_modules/@prisma/engines/)",
+      "Bash(npm show:*)"
+    ]
+  }
+}

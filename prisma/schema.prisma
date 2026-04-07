@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  passwordHash String?
+  googleId     String?     @unique
+  createdAt    DateTime    @default(now())
+  keys         StoredKey[]
+}
+
+model StoredKey {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label        String
+  encryptedKey String
+  iv           String
+  authTag      String
+  provider     String   @default("unknown")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
